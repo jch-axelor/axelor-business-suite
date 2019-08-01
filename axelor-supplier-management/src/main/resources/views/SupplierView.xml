@@ -8,16 +8,49 @@
 		<view-param name="show-toolbar" value="false"/>
 	</action-view>
 	
-	<form name="wizard-supplier-form" title="My space" model="com.axelor.apps.base.db.Wizard">
-		<panel name="mainPanel" hidden="true">
-			<field name="id"/>
-	    </panel>
-	    <panel name="actionsPanel">
-			<button name="myPurchaseOrderBtn"   title="My purchase orders" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
-		    <button name="myRFQToCompleteBtn"   title="My R.F.Q. to complete" onClick="wizard-supplier-form-open-my-rfq-to-complete" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
-			<button name="myRFQBtn"   title="My R.F.Q." onClick="wizard-supplier-form-open-my-rfq" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
-			<button name="myStockMoveBtn"   title="My deliveries" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
+	<form name="wizard-supplier-form" title="My space" model="com.axelor.apps.base.db.Wizard" onNew="action-method-complete-supplier-view-indicators" width="large" editable="false" canDelete="false" canEdit="false" canNew="false" canSave="false" canCopy="false" canArchive="false" canAttach="false">
+		<panel name="moduleIconPanel" colSpan="12">
+			<panel name="mainModulePanel" colSpan="10" itemSpan="2" colOffset="2">
+				<button name="myQuotationsBtn" title="Quotation" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu btn-default" icon="img/128px/app-sale.png" if-module="axelor-purchase" />
+				<button name="myShipBtn" title="Delivery" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu btn-default" icon="img/128px/app-stock.png" if-module="axelor-stock" />
+			    <button name="myInvoicesBtn" title="Invoicing" css="img-button client-img-menu btn-default" icon="img/128px/app-invoice.png" if-module="axelor-account" />
+			    <button name="myTicketsBtn" title="Helpdesk" css="img-button client-img-menu btn-default" icon="img/128px/app-helpdesk.png" if-module="axelor-helpdesk" />
+			</panel>
 		</panel>
+		<panel name="indicatorsPanel" colSpan="12">
+			<panel name="mainDashboardPanel" colSpan="10" itemSpan="2" colOffset="2">
+				<panel name="purchaseOrderPanel" title="Order" if-module="axelor-purchase" itemSpan="12">
+					<button name="$orders" title="Orders" width="190px" widget="info-button" />
+	                <button name="$quotationInProgress" title="Quotation in progress" width="190px" widget="info-button" />
+					<button name="$lastOrder" title="Last order" width="190px" widget="info-button" />
+				</panel>
+				<panel name="shipPanel" title="Delivery" if-module="axelor-stock" itemSpan="12">
+					<button name="$lastDelivery" title="Last delivery" width="190px" widget="info-button" />
+	                <button name="$nextDelivery" title="Next delivery" width="190px" widget="info-button" />
+	                <button name="$realizedDelivery" title="Realized delivery" width="190px" widget="info-button" />
+				</panel>
+				<panel name="invoicePanel"  title="Invoicing" if-module="axelor-account" itemSpan="12">
+					<button name="$overdueInvoices" title="Overdue invoices" width="190px" widget="info-button"/>
+					<button name="$awaitingInvoices" title="Awaiting invoices" width="190px" widget="info-button"/>
+					<button name="$totalRemaining" title="Total remaining" width="190px" widget="info-button" />
+				</panel>
+				<panel name="ticketPanel"  title="Customer helpdesk" if-module="axelor-helpdesk" itemSpan="12">
+					<button name="$supplierTickets" title="Supplier tickets" width="190px" widget="info-button" />
+	                <button name="$companyTickets" title="Tickets company" width="190px" widget="info-button" />
+	                <button name="$resolvedTickets" title="Resolved tickets" width="190px" height="100px" widget="info-button" />
+				</panel>
+			</panel>
+		</panel>
+		
+<!-- 		<panel name="mainPanel" hidden="true"> -->
+<!-- 			<field name="id"/> -->
+<!-- 	    </panel> -->
+<!-- 	    <panel name="actionsPanel"> -->
+<!-- 			<button name="myPurchaseOrderBtn"   title="My purchase orders" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/> -->
+<!-- 		    <button name="myRFQToCompleteBtn"   title="My R.F.Q. to complete" onClick="wizard-supplier-form-open-my-rfq-to-complete" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/> -->
+<!-- 			<button name="myRFQBtn"   title="My R.F.Q." onClick="wizard-supplier-form-open-my-rfq" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/> -->
+<!-- 			<button name="myStockMoveBtn"   title="My deliveries" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/> -->
+<!-- 		</panel> -->
 	</form>
 	
 	<action-view name="wizard-supplier-form-open-my-purchase-order" title="My purchase orders"
@@ -98,4 +131,7 @@
 		</panel>
     </form>
 	
+	<action-method name="action-method-complete-supplier-view-indicators" model="com.axelor.apps.base.db.Wizard">
+		<call class="com.axelor.apps.suppliermanagement.web.SupplierViewController" method="completeSupplierViewIndicators"/>
+	</action-method>
 </object-views>
