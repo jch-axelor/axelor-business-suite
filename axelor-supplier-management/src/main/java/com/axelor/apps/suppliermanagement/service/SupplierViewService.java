@@ -17,27 +17,32 @@
  */
 package com.axelor.apps.suppliermanagement.service;
 
-import java.util.HashMap;
+import com.axelor.auth.db.User;
 import java.util.Map;
 
-public class SupplierViewInterfaceImpl implements SupplierViewInterface {
+public interface SupplierViewService {
 
-  @Override
-  public Map<String, Object> updateSupplierViewIndicators() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("$orders", 2);
-    map.put("$quotationInProgress", 4);
-    map.put("$lastOrder", "19/02/2019");
-    map.put("$lastDelivery", "15/01/2019");
-    map.put("$nextDelivery", "28/02/2019");
-    map.put("$realizedDelivery", 4);
-    map.put("$overdueInvoices", 1);
-    map.put("$awaitingInvoices", 1);
-    map.put("$totalRemaining", 157);
-    map.put("$supplierTickets", 2);
-    map.put("$companyTickets", 105);
-    map.put("$resolvedTickets", 84);
+  public User getSupplierUser();
 
-    return map;
-  }
+  public Map<String, Object> updateSupplierViewIndicators();
+
+  public String getPurchaseOrdersOfSupplier(User user);
+
+  public String getPurchaseQuotationsInProgressOfSupplier(User user);
+
+  public String getLastPurchaseOrderOfSupplier(User user);
+
+  public String getLastDeliveryOfSupplier(User user);
+
+  public String getNextDeliveryOfSupplier(User user);
+
+  public String getDeliveriesToPrepareOfSupplier(User user);
+
+  public String getAwaitingInvoicesOfSupplier(User user);
+
+  public String getTotalRemainingOfSupplier(User user);
+
+  public String getTicketsOfSupplier(User user);
+
+  public String getResolvedTicketsOfSupplier(User user);
 }

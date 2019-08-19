@@ -12,9 +12,9 @@
 		<panel name="moduleIconPanel" colSpan="12">
 			<panel name="mainModulePanel" colSpan="10" itemSpan="2" colOffset="2">
 				<button name="myQuotationsBtn" title="Quotation" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu btn-default" icon="img/128px/app-sale.png" if-module="axelor-purchase" />
-				<button name="myShipBtn" title="Delivery" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu btn-default" icon="img/128px/app-stock.png" if-module="axelor-stock" />
-			    <button name="myInvoicesBtn" title="Invoicing" css="img-button client-img-menu btn-default" icon="img/128px/app-invoice.png" if-module="axelor-account" />
-			    <button name="myTicketsBtn" title="Helpdesk" css="img-button client-img-menu btn-default" icon="img/128px/app-helpdesk.png" if-module="axelor-helpdesk" />
+				<button name="myDeliveriesBtn" title="Delivery" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu btn-default" icon="img/128px/app-stock.png" if-module="axelor-stock" />
+			    <button name="myInvoicesBtn" title="Invoicing" onClick="wizard-supplier-form-open-my-invoices" css="img-button client-img-menu btn-default" icon="img/128px/app-invoice.png" if-module="axelor-account" />
+			    <button name="myTicketsBtn" title="Helpdesk" onClick="wizard-supplier-form-open-my-tickets" css="img-button client-img-menu btn-default" icon="img/128px/app-helpdesk.png" if-module="axelor-helpdesk" />
 			</panel>
 		</panel>
 		<panel name="indicatorsPanel" colSpan="12">
@@ -27,7 +27,7 @@
 				<panel name="shipPanel" title="Delivery" if-module="axelor-stock" itemSpan="12">
 					<button name="$lastDelivery" title="Last delivery" width="190px" widget="info-button" />
 	                <button name="$nextDelivery" title="Next delivery" width="190px" widget="info-button" />
-	                <button name="$realizedDelivery" title="Realized delivery" width="190px" widget="info-button" />
+	                <button name="$deliveriesToPrepare" title="Deliveries" width="190px" widget="info-button" />
 				</panel>
 				<panel name="invoicePanel"  title="Invoicing" if-module="axelor-account" itemSpan="12">
 					<button name="$overdueInvoices" title="Overdue invoices" width="190px" widget="info-button"/>
@@ -53,14 +53,8 @@
 <!-- 		</panel> -->
 	</form>
 	
-	<action-view name="wizard-supplier-form-open-my-purchase-order" title="My purchase orders"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid"/>
-		<view type="form" name="purchase-order-form"/>
-		<domain>self.supplierPartner = :_myPartner AND self.statusSelect in (2,3,4,5)</domain>
-		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
-	</action-view>
 	
+<!--
 	<action-view name="wizard-supplier-form-open-my-rfq-to-complete" title="My R.F.Q. to complete"
 		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
 		<view type="grid" name="purchase-order-supplier-line-supplier-grid"/>
@@ -76,14 +70,9 @@
 		<domain>self.supplierPartner = :_myPartner AND self.stateSelect in (2,3,4)</domain>
 		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
 	</action-view>
+-->
 	
-	<action-view name="wizard-supplier-form-open-stock-move" title="My deliveries"
-		model="com.axelor.apps.stock.db.StockMove">
-		<view type="grid" name="stock-move-supplier-grid"/>
-		<view type="form" name="stock-move-supplier-form"/>
-		<domain>self.typeSelect = 3 AND self.partner = :_myPartner</domain>
-		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
-	</action-view>	
+	
 	
 	<grid name="stock-move-supplier-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate"  canNew="false" canDelete="false">
 	  <field name="stockMoveSeq"/>
@@ -134,4 +123,57 @@
 	<action-method name="action-method-complete-supplier-view-indicators" model="com.axelor.apps.base.db.Wizard">
 		<call class="com.axelor.apps.suppliermanagement.web.SupplierViewController" method="completeSupplierViewIndicators"/>
 	</action-method>
+	
+	
+	
+	<action-view name="wizard-supplier-form-open-my-tickets" title="My tickets"
+		model="com.axelor.apps.helpdesk.db.Ticket" >
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form" />
+		<domain>self.supplierReferral = :_myPartner or self.createdBy =:_user</domain>
+		<context name="_myPartner" expr="eval:__user__.partner"/>
+		<context name="_user" expr="eval:__user__"/>
+	</action-view>
+	
+	
+	<action-view name="wizard-supplier-form-open-my-projects" title="My projects"
+		model="com.axelor.apps.project.db.Project" >
+		<view type="grid" name="business-project-grid"/>
+		<view type="form" name="project-form" />
+		<domain>self.clientPartner = :_myPartner</domain>
+		<context name="_myPartner" expr="eval:__user__.partner"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-my-purchase-order" title="My purchase orders"
+		model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<view type="grid" name="purchase-order-grid"/>
+		<view type="form" name="purchase-order-form"/>
+		<domain>self.supplierPartner = :_myPartner AND self.statusSelect in (2,3,4,5)</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-my-invoices" title="My invoices"
+		model="com.axelor.apps.account.db.Invoice" >
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form" />
+		<domain>self.partner = :_myPartner</domain>
+		<context name="_myPartner" expr="eval:__user__.partner"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-my-deliveries" title="My deliveries"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form" />
+		<domain>self.partner = :_myPartner</domain>
+		<context name="_myPartner" expr="eval:__user__.partner"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-stock-move" title="My deliveries"
+		model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-supplier-grid"/>
+		<view type="form" name="stock-move-supplier-form"/>
+		<domain>self.typeSelect = 3 AND self.partner = :_myPartner</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
+	</action-view>	
+	
 </object-views>

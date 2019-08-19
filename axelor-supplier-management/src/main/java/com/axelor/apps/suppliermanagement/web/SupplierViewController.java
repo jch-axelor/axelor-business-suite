@@ -17,8 +17,15 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
-import com.axelor.apps.suppliermanagement.service.SupplierViewInterface;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.suppliermanagement.service.SupplierViewService;
+import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.Map;
@@ -26,8 +33,157 @@ import java.util.Map;
 public class SupplierViewController {
 
   public void completeSupplierViewIndicators(ActionRequest request, ActionResponse response) {
-    Map<String, Object> map = Beans.get(SupplierViewInterface.class).updateSupplierViewIndicators();
+    Map<String, Object> map = Beans.get(SupplierViewService.class).updateSupplierViewIndicators();
 
     response.setValues(map);
+  }
+
+  /* PurchaseOrder OnClick */
+  public void getPurchaseOrders(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getAwaitingInvoicesOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Purchase orders"))
+            .model(PurchaseOrder.class.getName())
+            .add("grid", "purchase-order-grid")
+            .add("form", "purchase-order-form")
+            .domain(domain)
+            .map());
+  }
+
+  public void getPurchaseQuotationInProgress(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain =
+        Beans.get(SupplierViewService.class).getPurchaseQuotationsInProgressOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Quotation In Progress"))
+            .model(PurchaseOrder.class.getName())
+            .add("grid", "purchase-order-grid")
+            .add("form", "purchase-order-form")
+            .domain(domain)
+            .map());
+  }
+
+  public void getLastOrder(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getLastPurchaseOrderOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Last order"))
+            .model(PurchaseOrder.class.getName())
+            .add("grid", "purchase-order-grid")
+            .add("form", "purchase-order-form")
+            .domain(domain)
+            .map());
+  }
+
+  /* StockMove OnClick*/
+  public void getLastDelivery(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getLastDeliveryOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Last delivery"))
+            .model(StockMove.class.getName())
+            .add("grid", "stock-move-supplier-grid")
+            .add("form", "stock-move-supplier-form")
+            .domain(domain)
+            .map());
+  }
+
+  public void getNextDelivery(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getNextDeliveryOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Next delivery"))
+            .model(StockMove.class.getName())
+            .add("grid", "stock-move-supplier-grid")
+            .add("form", "stock-move-supplier-form")
+            .domain(domain)
+            .map());
+  }
+
+  public void getDeliveriesToPrepare(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getDeliveriesToPrepareOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Deliveries to prepare"))
+            .model(StockMove.class.getName())
+            .add("grid", "stock-move-supplier-grid")
+            .add("form", "stock-move-supplier-form")
+            .domain(domain)
+            .map());
+  }
+
+  /* Invoice */
+  /* TODO REVOIR LE COMPTEUR LE BOUTON*/
+  public void getOverdueInvoice(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getAwaitingInvoicesOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Overdue invoices"))
+            .model(Invoice.class.getName())
+            .add("grid", "invoice-grid")
+            .add("form", "invoice-form")
+            .domain(domain)
+            .map());
+  }
+
+  public void getAwaitingInvoice(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getAwaitingInvoicesOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Awaiting invoice"))
+            .model(Invoice.class.getName())
+            .add("grid", "invoice-grid")
+            .add("form", "invoice-form")
+            .domain(domain)
+            .map());
+  }
+
+  public void getTotalRemaining(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getTotalRemainingOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Total remaining"))
+            .model(Invoice.class.getName())
+            .add("grid", "invoice-grid")
+            .add("form", "invoice-form")
+            .domain(domain)
+            .map());
+  }
+
+  /* Helpdesk */
+  public void getSupplierTickets(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getTicketsOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Tickets"))
+            .model(Ticket.class.getName())
+            .add("grid", "ticket-grid")
+            .add("form", "ticket-form")
+            .domain(domain)
+            .map());
+  }
+
+  public void getResolvedTickets(ActionRequest request, ActionResponse response) {
+    SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
+    User user = supplierViewService.getSupplierUser();
+    String domain = Beans.get(SupplierViewService.class).getResolvedTicketsOfSupplier(user);
+    response.setView(
+        ActionView.define(I18n.get("Resolved tickets"))
+            .model(Ticket.class.getName())
+            .add("grid", "ticket-grid")
+            .add("form", "ticket-form")
+            .domain(domain)
+            .map());
   }
 }

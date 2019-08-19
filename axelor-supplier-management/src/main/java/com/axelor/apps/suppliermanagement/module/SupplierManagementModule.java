@@ -18,13 +18,13 @@
 package com.axelor.apps.suppliermanagement.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.suppliermanagement.service.SupplierViewInterface;
-import com.axelor.apps.suppliermanagement.service.SupplierViewInterfaceImpl;
+import com.axelor.apps.suppliermanagement.service.SupplierViewService;
+import com.axelor.apps.suppliermanagement.service.SupplierViewServiceImpl;
 
 public class SupplierManagementModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(SupplierViewInterface.class).to(SupplierViewInterfaceImpl.class);
+    bind(SupplierViewService.class).to(SupplierViewServiceImpl.class);
   }
 }
