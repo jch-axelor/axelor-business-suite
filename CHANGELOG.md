@@ -245,5 +245,6 @@
 - Fix nonexistent views
 - INVOICE : fix issue of invoice copy
 - TEAMTASK: Add fullname in demo data.
+- STOCK DETAILS BY PRODUCTS : remove mrp initiated
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
