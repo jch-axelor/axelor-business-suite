@@ -27,4 +27,11 @@ public interface IExceptionMessage {
   static final String PURCHASE_ORDER_1 = /*$$(*/ "Supplier's consulting's request created" /*)*/;
 
   static final String PURCHASE_ORDER_2 = /*$$(*/ "Suppliers orders' generation over" /*)*/;
+
+  static final String PRODUCT_SUPPLIER_NO_NAME = /*$$(*/ "Product has no name." /*)*/;
+
+  static final String PRODUCT_SUPPLIER_NO_CODE = /*$$(*/ "Product has no code." /*)*/;
+
+  static final String PRODUCT_SUPPLIER_SAME_CODE = /*$$(*/
+      "The code is already in database. Please choose another one." /*)*/;
 }

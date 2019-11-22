@@ -11,6 +11,9 @@
 	    	<field name="canPayOnline"  widget="boolean-switch"/>
 	    	<field name="manageTickets" widget="boolean-switch"/>
 	    	<field name="onlinePaymentMethodSet" colSpan="12" showIf="manageInvoices &amp;&amp; canPayOnline"/>
+	    	
+	    	<field name="displayProductCatalogSupplier" widget="boolean-switch"/>
+	    	
 		</panel>
 				        
 		<panel-mail name="mailPanel">

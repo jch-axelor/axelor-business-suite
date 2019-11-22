@@ -13,6 +13,8 @@
 		<boolean name="canPayOnline" title="Can pay online" default="false"/>
 		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
 		
+		<boolean name="displayProductCatalogSupplier" title="Display supplier product catalog" default="true"/>
+		
 		<track>
 			<field name="manageSaleOrders" on="UPDATE"/>
 			<field name="manageInvoices" on="UPDATE"/>
