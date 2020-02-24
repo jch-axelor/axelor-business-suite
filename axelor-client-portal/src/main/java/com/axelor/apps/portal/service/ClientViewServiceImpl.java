@@ -108,128 +108,182 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   /* SaleOrder Indicators */
   protected Integer getOrdersInProgressIndicator(User user) {
-    List<SaleOrder> saleOrderList =
-        saleOrderRepo.all().filter(getOrdersInProgressOfUser(user)).fetch();
-    return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
+    if (user.getPartner() != null) {
+      List<SaleOrder> saleOrderList =
+          saleOrderRepo.all().filter(getOrdersInProgressOfUser(user)).fetch();
+      return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
+    }
+    return 0;
   }
 
   protected Integer getQuotationsIndicator(User user) {
-    List<SaleOrder> saleOrderList = saleOrderRepo.all().filter(getQuotationsOfUser(user)).fetch();
-    return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
+    if (user.getPartner() != null) {
+      List<SaleOrder> saleOrderList = saleOrderRepo.all().filter(getQuotationsOfUser(user)).fetch();
+      return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
+    }
+    return 0;
   }
 
   protected String getLastOrderIndicator(User user) {
-    SaleOrder saleOrder = saleOrderRepo.all().filter(getLastOrderOfUser(user)).fetchOne();
-    if (saleOrder == null) {
-      return I18n.get(CLIENT_PORTAL_NO_DATE);
+    if (user.getPartner() != null) {
+      SaleOrder saleOrder = saleOrderRepo.all().filter(getLastOrderOfUser(user)).fetchOne();
+      if (saleOrder != null) {
+        return saleOrder.getConfirmationDateTime() != null
+            ? saleOrder.getConfirmationDateTime().format(DATE_FORMATTER)
+            : I18n.get(CLIENT_PORTAL_NO_DATE);
+      }
     }
-    return saleOrder.getConfirmationDateTime() != null
-        ? saleOrder.getConfirmationDateTime().format(DATE_FORMATTER)
-        : I18n.get(CLIENT_PORTAL_NO_DATE);
+    return I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 
   /* StockMove Indicators */
   protected String getLastDeliveryIndicator(User user) {
-    StockMove stockMove = stockMoveRepo.all().filter(getLastDeliveryOfUser(user)).fetchOne();
-    if (stockMove == null) {
-      return I18n.get(CLIENT_PORTAL_NO_DATE);
+    if (user.getPartner() != null) {
+      StockMove stockMove = stockMoveRepo.all().filter(getLastDeliveryOfUser(user)).fetchOne();
+      if (stockMove != null) {
+        return stockMove.getRealDate() != null
+            ? stockMove.getRealDate().format(DATE_FORMATTER)
+            : I18n.get(CLIENT_PORTAL_NO_DATE);
+      }
     }
-    return stockMove.getRealDate() != null
-        ? stockMove.getRealDate().format(DATE_FORMATTER)
-        : I18n.get(CLIENT_PORTAL_NO_DATE);
+    return I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 
   protected String getNextDeliveryIndicator(User user) {
-    StockMove stockMove = stockMoveRepo.all().filter(getNextDeliveryOfUser(user)).fetchOne();
-    if (stockMove == null) {
-      return I18n.get(CLIENT_PORTAL_NO_DATE);
+    if (user.getPartner() != null) {
+      StockMove stockMove = stockMoveRepo.all().filter(getNextDeliveryOfUser(user)).fetchOne();
+      if (stockMove != null) {
+        return stockMove.getEstimatedDate() != null
+            ? stockMove.getEstimatedDate().format(DATE_FORMATTER)
+            : I18n.get(CLIENT_PORTAL_NO_DATE);
+      }
     }
-    return stockMove.getEstimatedDate() != null
-        ? stockMove.getEstimatedDate().format(DATE_FORMATTER)
-        : I18n.get(CLIENT_PORTAL_NO_DATE);
+    return I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 
   protected Integer getPlannedDeliveriesIndicator(User user) {
-    List<StockMove> stockMoveList =
-        stockMoveRepo.all().filter(getPlannedDeliveriesOfUser(user)).fetch();
-    return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
+    if (user.getPartner() != null) {
+      List<StockMove> stockMoveList =
+          stockMoveRepo.all().filter(getPlannedDeliveriesOfUser(user)).fetch();
+      return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
+    }
+    return 0;
   }
 
   protected Integer getReversionsIndicator(User user) {
-    List<StockMove> stockMoveList = stockMoveRepo.all().filter(getReversionsOfUser(user)).fetch();
-    return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
+    if (user.getPartner() != null) {
+      List<StockMove> stockMoveList = stockMoveRepo.all().filter(getReversionsOfUser(user)).fetch();
+      return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
+    }
+    return 0;
   }
 
   /* Invoice Indicators */
   protected Integer getOverdueInvoicesIndicator(User user) {
-    List<Invoice> invoiceList = invoiceRepo.all().filter(getOverdueInvoicesOfUser(user)).fetch();
-    return !invoiceList.isEmpty() ? invoiceList.size() : 0;
+    if (user.getPartner() != null) {
+      List<Invoice> invoiceList = invoiceRepo.all().filter(getOverdueInvoicesOfUser(user)).fetch();
+      return !invoiceList.isEmpty() ? invoiceList.size() : 0;
+    }
+    return 0;
   }
 
   protected Integer getAwaitingInvoicesIndicator(User user) {
-    List<Invoice> invoiceList = invoiceRepo.all().filter(getAwaitingInvoicesOfUser(user)).fetch();
-    return !invoiceList.isEmpty() ? invoiceList.size() : 0;
+    if (user.getPartner() != null) {
+      List<Invoice> invoiceList = invoiceRepo.all().filter(getAwaitingInvoicesOfUser(user)).fetch();
+      return !invoiceList.isEmpty() ? invoiceList.size() : 0;
+    }
+    return 0;
   }
 
   protected String getTotalRemainingIndicator(User user) {
-    List<Invoice> invoiceList = invoiceRepo.all().filter(getTotalRemainingOfUser(user)).fetch();
-    if (!invoiceList.isEmpty()) {
-      BigDecimal total =
-          invoiceList
-              .stream()
-              .map(Invoice::getAmountRemaining)
-              .reduce((x, y) -> x.add(y))
-              .orElse(BigDecimal.ZERO);
-      return total.toString() + invoiceList.get(0).getCurrency().getSymbol();
+    if (user.getPartner() != null) {
+      List<Invoice> invoiceList = invoiceRepo.all().filter(getTotalRemainingOfUser(user)).fetch();
+      if (!invoiceList.isEmpty()) {
+        BigDecimal total =
+            invoiceList
+                .stream()
+                .map(Invoice::getAmountRemaining)
+                .reduce((x, y) -> x.add(y))
+                .orElse(BigDecimal.ZERO);
+        return total.toString() + invoiceList.get(0).getCurrency().getSymbol();
+      }
     }
     return BigDecimal.ZERO.toString();
   }
 
   protected Integer getRefundIndicator(User user) {
-    List<Invoice> invoiceList = invoiceRepo.all().filter(getRefundOfUser(user)).fetch();
-    return !invoiceList.isEmpty() ? invoiceList.size() : 0;
+    if (user.getPartner() != null) {
+      List<Invoice> invoiceList = invoiceRepo.all().filter(getRefundOfUser(user)).fetch();
+      return !invoiceList.isEmpty() ? invoiceList.size() : 0;
+    }
+    return 0;
   }
 
   /* Helpdesk Indicators */
   protected Integer getCustomerTicketsIndicator(User user) {
-    List<Ticket> ticketList = ticketRepo.all().filter(getTicketsOfUser(user)).fetch();
-    return !ticketList.isEmpty() ? ticketList.size() : 0;
+    if (user.getPartner() != null) {
+      List<Ticket> ticketList = ticketRepo.all().filter(getTicketsOfUser(user)).fetch();
+      return !ticketList.isEmpty() ? ticketList.size() : 0;
+    }
+    return 0;
   }
 
   protected Integer getCompanyTicketsIndicator(User user) {
-    List<Ticket> ticketList = ticketRepo.all().filter(getCompanyTicketsOfUser(user)).fetch();
-    return !ticketList.isEmpty() ? ticketList.size() : 0;
+    if (user.getPartner() != null) {
+      List<Ticket> ticketList = ticketRepo.all().filter(getCompanyTicketsOfUser(user)).fetch();
+      return !ticketList.isEmpty() ? ticketList.size() : 0;
+    }
+    return 0;
   }
 
   protected Integer getResolvedTicketsIndicator(User user) {
-    List<Ticket> ticketList = ticketRepo.all().filter(getResolvedTicketsOfUser(user)).fetch();
-    return !ticketList.isEmpty() ? ticketList.size() : 0;
+    if (user.getPartner() != null) {
+      List<Ticket> ticketList = ticketRepo.all().filter(getResolvedTicketsOfUser(user)).fetch();
+      return !ticketList.isEmpty() ? ticketList.size() : 0;
+    }
+    return 0;
   }
 
   protected Object getLateTicketsIndicator(User user) {
-    List<Ticket> ticketList = ticketRepo.all().filter(getLateTicketsOfUser(user)).fetch();
-    return !ticketList.isEmpty() ? ticketList.size() : 0;
+    if (user.getPartner() != null) {
+      List<Ticket> ticketList = ticketRepo.all().filter(getLateTicketsOfUser(user)).fetch();
+      return !ticketList.isEmpty() ? ticketList.size() : 0;
+    }
+    return 0;
   }
 
   /* Project Indicators */
   protected Integer getTotalProjectsIndicator(User user) {
-    List<Project> projectList = projectRepo.all().filter(getTotalProjectsOfUser(user)).fetch();
-    return !projectList.isEmpty() ? projectList.size() : 0;
+    if (user.getPartner() != null) {
+      List<Project> projectList = projectRepo.all().filter(getTotalProjectsOfUser(user)).fetch();
+      return !projectList.isEmpty() ? projectList.size() : 0;
+    }
+    return 0;
   }
 
   protected Integer getNewTasksIndicator(User user) {
-    List<TeamTask> teamTaskList = teamTaskRepo.all().filter(getNewTasksOfUser(user)).fetch();
-    return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
+    if (user.getPartner() != null) {
+      List<TeamTask> teamTaskList = teamTaskRepo.all().filter(getNewTasksOfUser(user)).fetch();
+      return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
+    }
+    return 0;
   }
 
   protected Integer getTasksInProgressIndicator(User user) {
-    List<TeamTask> teamTaskList = teamTaskRepo.all().filter(getTasksInProgressOfUser(user)).fetch();
-    return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
+    if (user.getPartner() != null) {
+      List<TeamTask> teamTaskList =
+          teamTaskRepo.all().filter(getTasksInProgressOfUser(user)).fetch();
+      return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
+    }
+    return 0;
   }
 
   protected Integer getTasksDueIndicator(User user) {
-    List<TeamTask> teamTaskList = teamTaskRepo.all().filter(getTasksDueOfUser(user)).fetch();
-    return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
+    if (user.getPartner() != null) {
+      List<TeamTask> teamTaskList = teamTaskRepo.all().filter(getTasksDueOfUser(user)).fetch();
+      return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
+    }
+    return 0;
   }
 
   /* SaleOrder Query */
